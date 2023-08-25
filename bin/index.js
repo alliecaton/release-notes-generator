@@ -1,11 +1,15 @@
-var GitHub = require('github-api');
-require('dotenv').config()
-// var auth = require('./auth.js')
+#! /usr/bin/env node 
 
-// you can authenticate with username and password
-var auth = new GitHub({
-  token: process.env.TOKEN
-});
+// Make config file with things like org, main branch, dev branch, repo, etc
+// -> config example
+
+// have it open a file that  user can edit, then use contents of file to make PR and release
+
+// look into this: https://rytr.me/
+
+// look into bundling this as a binary so that everything downloads at download
+
+const auth = require('./auth.js')
 
 var marketedge = auth.getRepo('TheAtlasMarketplaceCo', 'the-marketedge-app');
 
@@ -25,6 +29,8 @@ const options = { state: 'closed', sort: 'updated', direction: 'desc' }
       })
 
       // Split at most recent "Merge dev into main" PR
+
+      // TODO: get commits as part of the last release & compare commits after that for dev PRs to main branch
       const splitIndex = info.findIndex(pr => pr.title === 'Merge dev into main')
       const unreleased = info.slice(0, splitIndex)
 
