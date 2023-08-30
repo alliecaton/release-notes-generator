@@ -1,4 +1,4 @@
-#! /usr/bin/env node 
+#! /usr/bin/env node
 
 // Make config file with things like org, main branch, dev branch, repo, etc
 // -> config example
@@ -9,63 +9,49 @@
 
 // look into bundling this as a binary so that everything downloads at download
 
-const auth = require('./auth.js')
+const auth = require("./auth.js");
+const config = require("./config.js");
 
-var marketedge = auth.getRepo('TheAtlasMarketplaceCo', 'the-marketedge-app');
+const util = require("util");
 
-const options = { state: 'closed', sort: 'updated', direction: 'desc' }
+const createReleaseFile = require("./createFile.js");
 
-// const getPrList = (repo) => {
-  marketedge.listPullRequests(options, function (err, pullRequests) {
-    if (err) {
-      console.log(err)
-    } else {
-      // Format relevant info for easier reading
-      const info = pullRequests.map(pr => {
-        return {
-          title: pr.title,
-          body: pr.body,
-        }
-      })
+// const yargs = require("yargs/yargs");
 
-      // Split at most recent "Merge dev into main" PR
+const { org, repos } = config;
 
-      // TODO: get commits as part of the last release & compare commits after that for dev PRs to main branch
-      const splitIndex = info.findIndex(pr => pr.title === 'Merge dev into main')
-      const unreleased = info.slice(0, splitIndex)
+var repo = auth.getRepo(org, repos[0].name);
 
-      // If there are no unreleased PRs, log a message
-      // This means the most recent closed PR is "Merge dev into main"
-      if (!unreleased.length) {
-        console.log('📭 There are no unreleased PRs')
-        return
-      }
+const options = { state: "closed", sort: "updated", direction: "desc" };
 
-      const prReleaseNotes = unreleased.map(pr => {
-        // If a "Release Notes" section is included in PR, grab that list. 
-        // Otherwise get list under ## Changes
-        const changesSection = pr.body.split('##').find(section => section.includes('Release Notes' || 'Changes'))
-        const changesArray = changesSection.split('- ')
-        // Remove "## Changes" header and just get list of changes
-        changesArray.shift()
+const listPrs = async () => {
+  let data = {};
+  try {
+    const res = await repo.listPullRequests(options);
+    const splitIndex = res.data.findIndex((pr) => pr.base.ref === "main");
+    const unreleased = res.data.slice(0, splitIndex);
 
-        const stripped = changesArray.map(change => change.replace(/\n|\r/g, ''))
-
-        console.log(stripped)
-        return stripped
-      })
+    // If there are no unreleased PRs, log a message
+    // This means the most recent closed PR is "Merge dev into main"
+    if (!unreleased.length) {
+      console.log("📭 There are no unreleased PRs");
+      return;
     }
-  })
-// }
 
-// const releaseNotesUnformatted = getPrList(marketedge)
+    // Format relevant info for easier reading
+    const unreleasedPrs = unreleased.map((pr) => {
+      return {
+        title: pr.title,
+        body: pr.body,
+      };
+    });
 
-// console.log(releaseNotesUnformatted)
+    data = unreleasedPrs;
+  } catch (e) {
+    console.log(e);
+  } finally {
+    createReleaseFile(data);
+  }
+};
 
-
-// Plan: 
-
-// run ./generate-releasenotes.mjs --rep=<marketedge>
-// run getPrList(repo), output unformatted list
-// for each through each item in list, pass U, T, or D to bash output to categorize list into Updates/Additons, Techincal, or Disregard
-// Output final list
+listPrs();
