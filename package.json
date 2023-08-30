@@ -6,14 +6,14 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "bin": { 
-    "generate-release": "./bin/index.js" 
+  "bin": {
+    "generate-release": "./bin/index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@inquirer/prompts": "^3.0.4",
     "dotenv": "^16.3.1",
-    "github-api": "^3.4.0",
-    "yargs": "^17.7.2"
+    "github-api": "^3.4.0"
   }
 }

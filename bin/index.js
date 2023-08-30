@@ -1,57 +1,69 @@
 #! /usr/bin/env node
 
-// Make config file with things like org, main branch, dev branch, repo, etc
-// -> config example
-
 // have it open a file that  user can edit, then use contents of file to make PR and release
 
 // look into this: https://rytr.me/
 
 // look into bundling this as a binary so that everything downloads at download
 
-const auth = require("./auth.js");
-const config = require("./config.js");
+const auth = require("./auth.js")
+const config = require("./config.js")
 
-const util = require("util");
+const listPrs = require("./getPullRequests.js")
+const createReleaseFile = require("./createFile.js")
+const createPullRequest = require("./createPullRequest.js")
 
-const createReleaseFile = require("./createFile.js");
+const { select, confirm } = require("@inquirer/prompts")
 
-// const yargs = require("yargs/yargs");
+const { repos, username } = config
 
-const { org, repos } = config;
-
-var repo = auth.getRepo(org, repos[0].name);
-
-const options = { state: "closed", sort: "updated", direction: "desc" };
-
-const listPrs = async () => {
-  let data = {};
-  try {
-    const res = await repo.listPullRequests(options);
-    const splitIndex = res.data.findIndex((pr) => pr.base.ref === "main");
-    const unreleased = res.data.slice(0, splitIndex);
-
-    // If there are no unreleased PRs, log a message
-    // This means the most recent closed PR is "Merge dev into main"
-    if (!unreleased.length) {
-      console.log("📭 There are no unreleased PRs");
-      return;
-    }
-
-    // Format relevant info for easier reading
-    const unreleasedPrs = unreleased.map((pr) => {
+async function generate() {
+  const repo = await select({
+    message: "Which repo would you like to create a release for?",
+    choices: repos.map((repo) => {
       return {
-        title: pr.title,
-        body: pr.body,
-      };
-    });
+        name: repo.name,
+        value: repo,
+      }
+    }),
+  })
 
-    data = unreleasedPrs;
-  } catch (e) {
-    console.log(e);
-  } finally {
-    createReleaseFile(data);
+  if (!repo) {
+    console.log(
+      "No repo selected. Please add repos to config and re-run program."
+    )
+    return
   }
-};
 
-listPrs();
+  const ghRepo = auth.getRepo(repo.org || username, repo.name)
+  const unreleasedPrs = await listPrs(ghRepo)
+
+  if (unreleasedPrs) {
+    // Create release file with unreleasedPrs data
+    await createReleaseFile(unreleasedPrs)
+  }
+
+  // At this point, a new file has been created in the release-notes folder with the listed pull request info.
+
+  // We will wait for a confirmation that user is done editing.
+  // Once user confirms this prompt, we will begin the process of creating a new release.
+
+  console.log(
+    "📝 Please edit the release-notes.md file in the release-notes folder."
+  )
+  console.log(
+    "Once you are done, please confirm that you are ready to create a new release."
+  )
+  console.log(
+    "🚨 Please make sure you have saved the file before confirming. 🚨"
+  )
+  const createConfirm = await confirm({
+    message: "Are you done editing the release notes? (y/n)",
+  })
+
+  if (createConfirm) {
+    createPullRequest(repo, ghRepo)
+  }
+}
+
+generate()

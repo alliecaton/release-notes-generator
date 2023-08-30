@@ -1,5 +1,6 @@
 export const config = {
-  org: "MyOrganization",
+  username: "alliecaton",
+  org: "MyOrganization", // optional
   repos: [
     {
       name: "ecommerce-app",
@@ -12,4 +13,4 @@ export const config = {
       devBranch: "dev",
     },
   ],
-};
+}
