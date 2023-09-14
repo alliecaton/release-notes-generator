@@ -1,23 +1,23 @@
-const { copyFile, appendFile, open, writeFile } = require("node:fs/promises")
+const { copyFile, appendFile, open, readFile } = require('node:fs/promises')
 
 const filename = __dirname + `/release-notes/release-notes-${Date.now()}.md`
-const template = __dirname + "/release-notes/template.md"
+const template = __dirname + '/release-notes/template.md'
 
 const append = async (content) => {
   await appendFile(filename, content)
 }
 
 const openFile = () => {
-  open(filename, "r+")
+  open(filename, 'r+')
 }
 
 const appendToNewFile = async (releaseNotes) => {
   await append(
-    "\n\n<!---Below is the raw data of PRs that will be included in this release.-->\n\n### Raw PR Data\n\n"
+    '\n\n<!---Below is the raw data of PRs that will be included in this release.-->\n\n### Raw PR Data\n\n'
   )
 
   await releaseNotes.forEach((pr) => {
-    append("- " + pr.title + "\n\n")
+    append('- ' + pr.title + '\n\n')
   })
 
   // openFile(filename)
@@ -32,6 +32,12 @@ const createReleaseFile = async (releaseNotes) => {
   } finally {
     await appendToNewFile(releaseNotes)
   }
+
+  return filename
 }
 
-module.exports = createReleaseFile
+const read = async () => {
+  return readFile(filename, 'utf8')
+}
+
+module.exports = { createReleaseFile, read }

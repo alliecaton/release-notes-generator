@@ -1,50 +1,37 @@
-const options = { state: "closed", sort: "updated", direction: "desc" }
+const options = { state: 'closed', sort: 'updated', direction: 'desc' }
+const ghRequest = require('./ghRequest')
 
 const listPrs = async (repo) => {
-  let data = null
-  let error = null
-  try {
-    const res = await repo.listPullRequests(options)
+  let formattedData = null
 
-    if (res.data.success) {
-      const comparePr = res.data.find((pr) => pr.base.ref === "main")
-      const splitIndex = res.data.findIndex((pr) => pr.base.ref === "main")
+  const data = await ghRequest(repo.listPullRequests(options))
 
-      let unreleased
+  if (data) {
+    const comparePr = data.find((pr) => pr.base.ref === 'main')
+    const splitIndex = data.findIndex((pr) => pr.base.ref === 'main')
 
-      // If splitIndex does not exist, this means that it is the first PR to be merged into main,
-      // so we should collect all closed PRs.
-      if (!comparePr) {
-        unreleased = res.data
-      } else {
-        unreleased = res.data.slice(0, splitIndex)
-      }
+    let unreleased
 
-      // If there are no unreleased PRs, log a message
-      if (!unreleased.length) {
-        console.log("📭 There are no unreleased PRs")
-        return
-      }
-
-      // Format relevant info for easier reading
-      const unreleasedPrs = unreleased?.map((pr) => {
-        return {
-          title: pr.title,
-          body: pr.body,
-        }
-      })
-
-      data = unreleasedPrs
+    // If splitIndex does not exist, this means that it is the first PR to be merged into main,
+    // so we should collect all closed PRs.
+    if (!comparePr) {
+      unreleased = data
     } else {
-      error = res.data
+      unreleased = data.slice(0, splitIndex)
     }
-  } catch (e) {
-    console.log(e)
-    error = res.data
-  } finally {
-    if (data) return data
-    if (error) return error
+
+    // Format relevant info for easier reading
+    const unreleasedPrs = unreleased?.map((pr) => {
+      return {
+        title: pr.title,
+        body: pr.body,
+      }
+    })
+
+    formattedData = unreleasedPrs
   }
+
+  return formattedData
 }
 
 module.exports = listPrs
