@@ -1,4 +1,11 @@
-const { copyFile, appendFile, open, readFile } = require('node:fs/promises')
+import { copyFile, appendFile, open, readFile } from 'node:fs/promises'
+
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+
+const __dirname = path.dirname(__filename)
 
 const filename = __dirname + `/release-notes/release-notes-${Date.now()}.md`
 const template = __dirname + '/release-notes/template.md'
@@ -23,7 +30,7 @@ const appendToNewFile = async (releaseNotes) => {
   // openFile(filename)
 }
 
-const createReleaseFile = async (releaseNotes) => {
+export const createReleaseFile = async (releaseNotes) => {
   try {
     // Create new file
     await copyFile(template, filename)
@@ -36,8 +43,6 @@ const createReleaseFile = async (releaseNotes) => {
   return filename
 }
 
-const read = async () => {
+export const read = async () => {
   return readFile(filename, 'utf8')
 }
-
-module.exports = { createReleaseFile, read }

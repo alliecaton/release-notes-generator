@@ -1,6 +1,6 @@
-const ghRequest = require('./ghRequest')
+import { ghRequest } from './ghRequest.js'
 
-const createPullRequest = async (repoInfo, ghRepo, body) => {
+export const createPullRequest = async (repoInfo, ghRepo, body) => {
   try {
     const data = await ghRequest(
       ghRepo.createPullRequest({
@@ -17,5 +17,3 @@ const createPullRequest = async (repoInfo, ghRepo, body) => {
     console.log(e)
   }
 }
-
-module.exports = createPullRequest

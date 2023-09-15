@@ -1,4 +1,4 @@
-const ghRequest = async (request) => {
+export const ghRequest = async (request) => {
   let data = null
   try {
     const res = await request
@@ -17,5 +17,3 @@ const ghRequest = async (request) => {
     return data
   }
 }
-
-module.exports = ghRequest

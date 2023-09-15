@@ -1,7 +1,7 @@
 const options = { state: 'closed', sort: 'updated', direction: 'desc' }
-const ghRequest = require('./ghRequest')
+import { ghRequest } from './ghRequest.js'
 
-const listPrs = async (repo) => {
+export const listPrs = async (repo) => {
   let formattedData = null
 
   const data = await ghRequest(repo.listPullRequests(options))
@@ -33,5 +33,3 @@ const listPrs = async (repo) => {
 
   return formattedData
 }
-
-module.exports = listPrs

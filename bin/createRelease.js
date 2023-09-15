@@ -1,6 +1,12 @@
-const ghRequest = require('./ghRequest')
+import { ghRequest } from './ghRequest.js'
 
-const createRelease = async (repoInfo, ghRepo, releaseName, tag, body) => {
+export const createRelease = async (
+  repoInfo,
+  ghRepo,
+  releaseName,
+  tag,
+  body
+) => {
   try {
     const data = await ghRequest(
       ghRepo.createRelease({
@@ -17,5 +23,3 @@ const createRelease = async (repoInfo, ghRepo, releaseName, tag, body) => {
     console.log(e)
   }
 }
-
-module.exports = createRelease

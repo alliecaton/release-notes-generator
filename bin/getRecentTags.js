@@ -1,6 +1,6 @@
-const ghRequest = require('./ghRequest')
+import { ghRequest } from './ghRequest.js'
 
-const listTags = async (ghRepo) => {
+export const listTags = async (ghRepo) => {
   try {
     const data = await ghRequest(ghRepo.listTags())
 
@@ -9,5 +9,3 @@ const listTags = async (ghRepo) => {
     console.log(e)
   }
 }
-
-module.exports = listTags

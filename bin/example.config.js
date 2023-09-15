@@ -1,4 +1,4 @@
-const config = {
+export const config = {
   username: 'alliecaton',
   org: 'MyOrganization', // optional
   repos: [
@@ -15,5 +15,3 @@ const config = {
     },
   ],
 }
-
-module.exports = config

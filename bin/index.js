@@ -5,16 +5,15 @@
 
 // look into bundling this as a binary so that everything downloads at download
 
-const auth = require('./auth.js')
-const config = require('./config.js')
+import { auth } from './auth.js'
+import { config } from './config.js'
+import { listPrs } from './getPullRequests.js'
+import { createReleaseFile, read } from './createFile.js'
+import { createPullRequest } from './createPullRequest.js'
+import { createRelease } from './createRelease.js'
+import { listTags } from './getRecentTags.js'
 
-const listPrs = require('./getPullRequests.js')
-const { createReleaseFile, read } = require('./createFile.js')
-const createPullRequest = require('./createPullRequest.js')
-const createRelease = require('./createRelease.js')
-const listTags = require('./getRecentTags.js')
-
-const { select, confirm, input } = require('@inquirer/prompts')
+import { select, confirm, input } from '@inquirer/prompts'
 
 const { repos, username } = config
 
