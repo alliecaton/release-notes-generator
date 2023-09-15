@@ -13,7 +13,7 @@ const openFile = () => {
 
 const appendToNewFile = async (releaseNotes) => {
   await append(
-    '\n\n<!---Below is the raw data of PRs that will be included in this release.-->\n\n### Raw PR Data\n\n'
+    '\n\n<!---Below is the raw data of PRs that will be included in this release.-->\n\n<!--Raw PR Data-->\n\n'
   )
 
   await releaseNotes.forEach((pr) => {

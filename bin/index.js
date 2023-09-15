@@ -1,5 +1,4 @@
 #! /usr/bin/env node
-
 // have it open a file that  user can edit, then use contents of file to make PR and release
 
 // look into this: https://rytr.me/
@@ -81,7 +80,7 @@ async function generate() {
     console.log('')
 
     const releaseTitle = await input({
-      message: '🖊️ What is the title of the release?',
+      message: '🖊️  What is the title of the release?',
     })
 
     console.log('')
@@ -90,7 +89,7 @@ async function generate() {
     const tags = await listTags(ghRepo)
 
     if (tags.length) {
-      console.log('The last 3 release tags are:')
+      console.log(`Last ${tags.length} release tag(s):`)
       console.log(tags.map((tag) => tag.name).join('\n'))
     } else {
       console.log('No previous release tags found.')
