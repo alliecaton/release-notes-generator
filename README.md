@@ -10,6 +10,8 @@ This tool will prompt you through a flow that:
 
 👉 Drafts a title & tagged GitHub release with release notes populating the body
 
+![Screenshot 2023-09-15 at 12 15 56 PM](https://github.com/alliecaton/release-notes-generator/assets/56280128/0bf41853-328b-49d5-835c-3d69cf99fd7e)
+
 ## Installation
 
 Install packages:
