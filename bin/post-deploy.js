@@ -101,7 +101,7 @@ export default async function postDeploy(data) {
       Authorization: 'Bearer ' + process.env.SLACK_TOKEN,
     },
     body: JSON.stringify({
-      channel: 'D02AK9DDY4E', // process.env.SLACK_RELEASES_CHANNEL,
+      channel: process.env.SLACK_RELEASES_CHANNEL,
       blocks: blocksFormatted,
     }),
   })
@@ -123,7 +123,7 @@ export default async function postDeploy(data) {
       Authorization: 'Bearer ' + process.env.SLACK_TOKEN,
     },
     body: JSON.stringify({
-      channel: 'D02AK9DDY4E', // process.env.SLACK_DEPLOYMENTS_CHANNEL,
+      channel: process.env.SLACK_DEPLOYMENTS_CHANNEL,
       blocks: [
         { type: 'section', text: { type: 'plain_text', text: formattedToday } },
         {
