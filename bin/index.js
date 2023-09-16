@@ -1,9 +1,23 @@
 #! /usr/bin/env node
-// have it open a file that  user can edit, then use contents of file to make PR and release
+import fs from 'fs'
 
-// look into this: https://rytr.me/
+import path from 'path'
+import { fileURLToPath } from 'url'
 
-// look into bundling this as a binary so that everything downloads at download
+const __filename = fileURLToPath(import.meta.url)
+
+const __dirname = path.dirname(__filename)
+
+let postDeploy = null
+if (fs.existsSync(__dirname + '/post-deploy.js')) {
+  await import('./post-deploy.js').then((script) => {
+    if (script) {
+      postDeploy = script.default
+    }
+  })
+}
+
+console.log(fs.existsSync(__dirname + '/post-deploy.js'))
 
 import { auth } from './auth.js'
 import { config } from './config.js'
@@ -14,6 +28,7 @@ import { createRelease } from './createRelease.js'
 import { listTags } from './getRecentTags.js'
 
 import { select, confirm, input } from '@inquirer/prompts'
+import { exists } from 'node:fs'
 
 const { repos, username } = config
 
@@ -76,8 +91,6 @@ async function generate() {
 
     await createPullRequest(repo, ghRepo, fileBody)
 
-    console.log('')
-
     const releaseTitle = await input({
       message: '🖊️  What is the title of the release?',
     })
@@ -118,10 +131,30 @@ async function generate() {
     console.log('------------------------------------')
     console.log('')
 
-    console.log('🎉  All done!')
+    if (postDeploy) {
+      console.log('💻  You have a post-deploy script installed.')
+      console.log('')
 
-    // TODO: add concept of post-deploy script
-    // For us it could post to slack :O
+      const createConfirm = await confirm({
+        message: 'Would you like to run your post-deploy script now? (y/n)',
+      })
+
+      if (createConfirm) {
+        await postDeploy({
+          repo,
+          ghRepo,
+          tagName,
+          releaseTitle,
+          fileBody,
+        })
+      }
+
+      console.log('')
+      console.log('------------------------------------')
+    }
+
+    console.log('')
+    console.log('🎉  All done!')
   }
 }
 
