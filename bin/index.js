@@ -118,7 +118,7 @@ async function generate() {
     console.log('------------------------------------')
     console.log('')
 
-    console.log('🎉  All done!')
+    console.log('👋  All done!')
 
     // TODO: add concept of post-deploy script
     // For us it could post to slack :O
