@@ -154,7 +154,7 @@ async function generate() {
     }
 
     console.log('')
-    console.log('🎉  All done!')
+    console.log('👋  All done!')
   }
 }
 
