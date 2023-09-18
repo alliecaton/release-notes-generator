@@ -34,6 +34,14 @@ $ npm install -g .
 
 This tool requires a GitHub personal access token to authenticate your account. [Follow GitHub instructions on how to generate one.](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)
 
+It's up to you to decide how long of an expiration to give your token. If you give your token a limited expiration, you will need to udpate your env file every time it expires and you create a new one manually. 
+
+You can customize your token to have whichever scopes you'd like. Recommended bsaseline scopes are: 
+```
+- repo
+- user
+```
+
 Once you have a token, create a `.env` file based on the `.env-example` included in the root of this repository:
 
 ```console

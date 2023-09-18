@@ -28,7 +28,6 @@ import { createRelease } from './createRelease.js'
 import { listTags } from './getRecentTags.js'
 
 import { select, confirm, input } from '@inquirer/prompts'
-import { exists } from 'node:fs'
 
 const { repos, username } = config
 
