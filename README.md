@@ -81,7 +81,7 @@ $ cp .example.config.js config.js
 **Optional steps**
 
 - Included in this repository is a `/bin/release-notes/template.md` that is used to generate the format of the PR and release body. Update this file to customize your release notes format.
-- You made include a `bin/post-deploy.js` file
+- You may include a `bin/post-deploy.js` file to optionally run as final step.
 
 ## Usage
 
