@@ -6,6 +6,8 @@ export const listPrs = async (repo) => {
 
   const data = await ghRequest(repo.listPullRequests(options))
 
+  console.log(data)
+
   if (data) {
     const comparePr = data.find((pr) => pr.base.ref === 'main')
     const splitIndex = data.findIndex((pr) => pr.base.ref === 'main')
