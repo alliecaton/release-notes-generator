@@ -1,0 +1,22 @@
+{
+  "name": "release-notes-generator",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "generate-release": "node ./bin/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "generate-release": "./bin/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@inquirer/prompts": "^3.0.4",
+    "dotenv": "^16.3.1",
+    "github-api": "^3.4.0",
+    "node-fetch": "^3.3.2"
+  }
+}
